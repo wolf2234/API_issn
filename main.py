@@ -1,4 +1,3 @@
-from libs.logging import turn_on_debug, print_log
 from issn_api import get_by_issn, get_issns_from_file
 
 
@@ -19,51 +18,35 @@ def process_data_by_issn():
 
         book = get_by_issn(issn)
 
-        total_keys += book['statistic'].get('total_keys', 0)
-        num_success_keys += book['statistic'].get('success_keys', 0)
-        num_unsuccess_keys += book['statistic'].get('unsuccess_keys', 0)
-        num_unparsed_keys += book['statistic'].get('unparsed_keys', 0)
+        total_keys += book["statistic"].get("total_keys", 0)
+        num_success_keys += book["statistic"].get("success_keys", 0)
+        num_unsuccess_keys += book["statistic"].get("unsuccess_keys", 0)
+        num_unparsed_keys += book["statistic"].get("unparsed_keys", 0)
 
-        for key in book['unsuccessful']:
+        for key in book["unsuccessful"]:
             unsuccess_keys.append(key)
 
-        for key in book['unparsed_b']:
+        for key in book["unparsed_b"]:
             unsuccess_b_keys.append(key)
 
-        for key in book['unparsed_keys']:
-            unparsed_keys[key] = 1 if (key not in unparsed_keys) \
-                                    else (unparsed_keys[key] + 1)
+        for key in book["unparsed_keys"]:
+            unparsed_keys[key] = (
+                1 if (key not in unparsed_keys) else (unparsed_keys[key] + 1)
+            )
 
-        # if total_issns >= 100:
-        #     break
+    data = {
+            "total_issn": total_issns,
+            "total_keys": total_keys,
+            "successful_processed_keys": num_success_keys,
+            "unsuccessful_processed_keys": num_unsuccess_keys,
+            "unparsed_keys": num_unparsed_keys,
+            "list_unparsed_keys": sum(unparsed_keys.values()),
+            "list_unparsed_keys_b": len(unsuccess_b_keys),
+            "list_unsuccessful_parsed_keys": len(unsuccess_keys),
+            }
 
-    print_log(f"=== Total of ISSN: {total_issns} ===")
-    print_log(f"=== Total of keys: {total_keys} ===")
-    print_log(f"=== Successful processed keys: {num_success_keys} ===")
-    print_log(f"=== Unsuccessful processed keys: {num_unsuccess_keys} ===")
-    print_log(f"=== Unparsed keys: {num_unparsed_keys} ===")
-    print_log("====================")
-
-    print_log(f"=== List of Unparsed keys: {sum(unparsed_keys.values())} ===")
-    for key, value in unparsed_keys.items():
-        print_log(f"=== key: {key} | value: {value} ===")
-
-    print_log("====================")
-
-    print_log(f"=== List of Unparsed keys 'b': {len(unsuccess_b_keys)} ===")
-    # for key in unsuccess_b_keys:
-    #     print_log(f"=== key: {key} ===")
-
-    print_log("====================")
-
-    print_log(f"=== List of Unsuccessful parsed keys {len(unsuccess_keys)} ===")
-    # for key in unsuccess_keys:
-    #     print_log(f"=== key: {key} ===")
-
-    print_log("====================")
+    return data
 
 
-if __name__ == '__main__':
-    turn_on_debug(True)
+if __name__ == "__main__":
     process_data_by_issn()
-
