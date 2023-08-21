@@ -1,4 +1,3 @@
-
 from libs.logging import turn_on_debug, print_log
 from issn_api import get_by_issn, get_issns_from_file
 
