@@ -12,7 +12,6 @@
 - parse_issn_data;
 - parse_issn_resource;
 - parse_oraganization;
-- parse_oraganization;
 - parse_country_code;
 - parse_status;
 - parse_format;
