@@ -485,6 +485,7 @@ def parse_item(item: dict) -> Union[dict, str]:
             else:
                 return data[key]
 
+
 def get_list_messages(error):
     for key in error:
         if error[key]:
