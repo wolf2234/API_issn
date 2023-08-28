@@ -73,7 +73,6 @@ def parse_issn_data(issn: str, data: dict) -> dict:
     result = {
         "issn": issn,
         "data": {},
-        "parse_errors": {},
         "unparsed_keys": [],
         "unsuccessful": [],
         "errors": [],
@@ -95,51 +94,33 @@ def parse_issn_data(issn: str, data: dict) -> dict:
         id_attr = item.get("@id")
 
         if not id_attr:
-            parse_error = {"parse_issn_data": f"ERROR: @id doesn't exist in {item}"}
-            result["parse_errors"].update(parse_error)
             continue
 
         if id_attr.startswith("http://id.loc.gov/vocabulary/countries"):
             country = parse_country(item)
-            errors = get_list_messages(country[1])
             issn_data["Country"] = country[0]
-            result["parse_errors"].update(errors)
         elif id_attr.startswith("organization/ISSNCenter"):
             organization = parse_oraganization(item)
-            errors = get_list_messages(organization[1])
             issn_data["Organization"] = organization[0]
-            result["parse_errors"].update(errors)
         elif id_attr == f"resource/ISSN/{issn}#ReferencePublicationEvent":
             country_code = parse_country_code(item)
-            errors = get_list_messages(country_code[1])
             issn_data["CountryCode"] = country_code[0]
-            result["parse_errors"].update(errors)
         elif id_attr == f"resource/ISSN/{issn}#ISSN":
             resource_issn = parse_issn(issn, item)
-            errors = get_list_messages(resource_issn[1])
             issn_data["ISSN"] = resource_issn[0]
-            result["parse_errors"].update(errors)
         elif id_attr == f"resource/ISSN/{issn}#ISSN-L":
             resource_issnL = parse_issnL(item)
-            errors = get_list_messages(resource_issnL[1])
             issn_data["ISSN-L"] = resource_issnL[0]
-            result["parse_errors"].update(errors)
         elif id_attr == f"resource/ISSN/{issn}#KeyTitle":
             key_title = parse_key_title(item)
-            errors = get_list_messages(key_title[1])
             issn_data["KeyTitle"] = key_title[0]
-            result["parse_errors"].update(errors)
         elif id_attr == f"resource/ISSN/{issn}#Record":
             record = parse_record(item)
-            errors = get_list_messages(record[1])
             issn_data.update(record[0])
-            result["parse_errors"].update(errors)
         elif id_attr == f"resource/ISSN/{issn}":
             another_resource_data = parse_issn_resource(item)
-            errors = get_list_messages(another_resource_data[1])
             issn_data["ISSN_resource"] = issn
             issn_data["resource"] = another_resource_data[0]
-            result["parse_errors"].update(errors)
         elif id_attr.startswith("resource/ISSN-L/"):
             result["unparsed_keys"].append("resource/ISSN-L/{issn-L}")
             unparsed += 1
@@ -187,9 +168,6 @@ def parse_issn_data(issn: str, data: dict) -> dict:
                 "resource/ISSN/{issn}#LatestPublicationEvent"
             )
             unparsed += 1
-        elif id_attr.startswith("_:b"):
-            result["unsuccessful"].append(id_attr)
-            unsuccess += 1
         else:
             result["unsuccessful"].append(id_attr)
             unsuccess += 1

@@ -1,0 +1,21 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "issn"
+version = "0.0.3"
+authors = [
+  { name="Example Viktor", email="viktoral9599@gmail.com" },
+]
+description = "This package parses ISSN and returns data by it."
+readme = "../README.md"
+requires-python = ">=3.7"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+"Documentation" = "https://portal.issn.org/faq7"
